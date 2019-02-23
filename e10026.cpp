@@ -10,6 +10,7 @@
 using namespace std;
 
 vector<int> job_sequence(vector<tuple<int, int, int>> &tasks) {
+
   vector<int> v = {1, 2, 3};
   return v;
 }
