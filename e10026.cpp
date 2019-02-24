@@ -31,6 +31,8 @@ vector<int> job_order(vector<tuple<int, int, int>> &tasks) {
     }
   }
 
+  // the problem is deleting the element each time is linear
+  tasks.erase(max_it);
   job_order.push_back(get<INDEX>(*max_it));
 }
 
