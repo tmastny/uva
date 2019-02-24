@@ -17,29 +17,51 @@ bool compare2(const tuple<int, int> &a, const tuple<int, int> &b) {
   return get<1>(a) < get<1>(b);
 }
 
-vector<int> job_order(vector<tuple<int, int, int>> &tasks) {
-  int days_remaining = tasks.size();
-  vector<int> job_order;
-
-  int max_job_cost = 0;
-  vector<tuple<int, int, int>>::iterator max_it;
-  for (auto it = tasks.begin(); it != tasks.end(); it++) {
-    int job_cost = (days_remaining - get<TIME>(*it)) * get<FINE>(*it);
-    if (job_cost > max_job_cost) {
-      max_job_cost = job_cost;
-      max_it = it;
-    }
+int task_time(vector<tuple<int, int, int>> &tasks) {
+  int sum = 0;
+  for (auto el : tasks) {
+    sum += get<TIME>(el);
   }
 
-  // the problem is deleting the element each time is linear
-  tasks.erase(max_it);
-  job_order.push_back(get<INDEX>(*max_it));
+  return sum;
+}
+
+vector<int> job_order(vector<tuple<int, int, int>> &tasks, vector<int> &order) {
+  //vector<int> order;
+  order.clear();
+  int days_left = task_time(tasks);
+
+  while (tasks.size() > 0) {
+
+    int max_delay_cost = 0;
+    vector<tuple<int, int, int>>::iterator max_it;
+    for (auto it = tasks.begin(); it != tasks.end(); it++) {
+
+      int delay_cost = (days_left - get<TIME>(*it)) * get<FINE>(*it);
+
+      if (delay_cost > max_delay_cost) {
+        max_delay_cost = delay_cost;
+        max_it = it;
+      }
+    }
+
+    order.push_back(get<INDEX>(*max_it));
+    days_left -= get<TIME>(*max_it);
+
+    tasks.erase(max_it);
+  }
+
+  return order;
 }
 
 void print_job_order(vector<int> &seq) {
-  for (auto el : seq) {
-    cout << el << " ";
+  for (int i = 0; i < seq.size(); i++) {
+    cout << seq[i];
+    if (i < seq.size() - 1) {
+      cout << " ";
+    }
   }
+
   cout << endl;
 }
 
@@ -48,12 +70,15 @@ int main() {
   int cases;
   cin >> cases;
 
+  vector<tuple<int, int, int>> tasks;
+  vector<int> jobs;
   for (int i = 0; i < cases; i++) {
     string empty_line;
     getline(cin, empty_line);
 
+    tasks.clear();
+    jobs.clear();
 
-    vector<tuple<int, int, int>> tasks;
     int tasks_number;
     cin >> tasks_number;
     for (int j = 0; j < tasks_number; j++) {
@@ -64,7 +89,8 @@ int main() {
       tasks.push_back(make_tuple(j + 1, time, fine));
     }
 
-    vector<int> jobs = job_order(tasks);
+    //vector<int> jobs = job_order(tasks, jobs);
+    job_order(tasks, jobs);
     print_job_order(jobs);
   }
 }
