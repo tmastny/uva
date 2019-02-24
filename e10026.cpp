@@ -7,37 +7,36 @@
 #include <iterator>
 #include <algorithm>
 
+#define INDEX 0
+#define TIME 1
+#define FINE 2
+
 using namespace std;
 
-struct job {
-  int num;
-  int time;
-  int fine;
+bool compare2(const tuple<int, int> &a, const tuple<int, int> &b) {
+  return get<1>(a) < get<1>(b);
 }
 
-bool sort_by_third(const tuple<int, int, int> &a, const tuple<int, int, int> &b) {
-  return get<2>(a) > get<2>(b);
-}
-
-bool max_job()
-
-void sort_jobs(vector<tuple<int, int, int>> &tasks) {
+vector<int> job_order(vector<tuple<int, int, int>> &tasks) {
   int days_remaining = tasks.size();
+  vector<int> job_order;
 
-  vector<tuple<int, int>> delayed_costs;
-  for (auto job : tasks) {
-    int job_cost = (days_remaining - get<1>(job)) * get<2>(job);
-    delayed_costs.push_back(make_tuple(get<0>(job), job_cost);
+  int max_job_cost = 0;
+  vector<tuple<int, int, int>>::iterator max_it;
+  for (auto it = tasks.begin(); it != tasks.end(); it++) {
+    int job_cost = (days_remaining - get<TIME>(*it)) * get<FINE>(*it);
+    if (job_cost > max_job_cost) {
+      max_job_cost = job_cost;
+      max_it = it;
+    }
   }
 
-  auto next_job = max_element(delayed_costs.begin(), delayed_costs.end());
-
-  sort(tasks.begin(), tasks.end(), sort_by_third);
+  job_order.push_back(get<INDEX>(*max_it));
 }
 
-void print_job_order(vector<tuple<int, int, int>> &seq) {
+void print_job_order(vector<int> &seq) {
   for (auto el : seq) {
-    cout << get<0>(el) << " ";
+    cout << el << " ";
   }
   cout << endl;
 }
@@ -63,7 +62,7 @@ int main() {
       tasks.push_back(make_tuple(j + 1, time, fine));
     }
 
-    sort_jobs(tasks);
-    print_job_order(tasks);
+    vector<int> jobs = job_order(tasks);
+    print_job_order(jobs);
   }
 }
