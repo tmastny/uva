@@ -34,7 +34,7 @@ void job_order(vector<tuple<int, int, int>> &tasks, vector<int> &order) {
   while (tasks.size() > 0) {
 
     int max_delay_cost = 0;
-    vector<tuple<int, int, int>>::iterator max_it;
+    auto max_it = tasks.begin();
     for (auto it = tasks.begin(); it != tasks.end(); it++) {
 
       int delay_cost = (days_left - get<TIME>(*it)) * get<FINE>(*it);
@@ -63,6 +63,17 @@ void print_job_order(vector<int> &seq) {
   }
 
   cout << endl;
+}
+
+int job_cost(vector<tuple<int, int, int>> &tasks) {
+  int cost = 0;
+  int delay = 0;
+  for (auto el : tasks) {
+    cost += delay * get<FINE>(el);
+    delay += get<TIME>(el);
+  }
+
+  return cost;
 }
 
 int main() {
