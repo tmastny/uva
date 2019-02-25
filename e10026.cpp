@@ -26,7 +26,7 @@ int task_time(vector<tuple<int, int, int>> &tasks) {
   return sum;
 }
 
-vector<int> job_order(vector<tuple<int, int, int>> &tasks, vector<int> &order) {
+void job_order(vector<tuple<int, int, int>> &tasks, vector<int> &order) {
   //vector<int> order;
   order.clear();
   int days_left = task_time(tasks);
@@ -51,7 +51,7 @@ vector<int> job_order(vector<tuple<int, int, int>> &tasks, vector<int> &order) {
     tasks.erase(max_it);
   }
 
-  return order;
+  //return order;
 }
 
 void print_job_order(vector<int> &seq) {
