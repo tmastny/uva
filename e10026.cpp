@@ -100,7 +100,8 @@ int main() {
       tasks.push_back(make_tuple(j + 1, time, fine));
     }
 
-    //vector<int> jobs = job_order(tasks, jobs);
+    cout << job_cost(tasks) << endl;
+
     job_order(tasks, jobs);
     print_job_order(jobs);
   }
