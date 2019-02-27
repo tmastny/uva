@@ -15,8 +15,10 @@
 
 using namespace std;
 
-bool compare(tuple<int, int ,int> &a, tuple<int, int ,int> &b) {
-  return get<INDEX>(a) < get<INDEX>(b);
+bool job_compare(tuple<int, int ,int> &a, tuple<int, int ,int> &b) {
+  return (
+    (get<TIME>(a) - get<FINE>(a)) < (get<TIME>(b) - get<FINE>(b))
+  );
 }
 
 int task_time(vector<tuple<int, int, int>> &tasks) {
@@ -26,28 +28,6 @@ int task_time(vector<tuple<int, int, int>> &tasks) {
   }
 
   return sum;
-}
-
-void job_order(vector<tuple<int, int, int>> &tasks) {
-  int days_left = task_time(tasks);
-
-  for (int i = 0; i < tasks.size(); i++) {
-
-    int max_delay_cost = 0;
-    auto max_it = tasks.begin() + i;
-    for (auto it = max_it; it != tasks.end(); it++) {
-
-      int delay_cost = (days_left - get<TIME>(*it)) * get<FINE>(*it);
-
-      if (delay_cost > max_delay_cost) {
-        max_delay_cost = delay_cost;
-        max_it = it;
-      }
-    }
-
-    swap(*max_it, tasks[i]);
-    days_left -= get<TIME>(*max_it);
-  }
 }
 
 void print_job_order(vector<tuple<int, int, int>> &seq) {
@@ -61,6 +41,13 @@ void print_job_order(vector<tuple<int, int, int>> &seq) {
   cout << endl;
 }
 
+void print_job_tuple(vector<tuple<int, int, int>> &seq) {
+  for (auto el : seq) {
+    cout << "(" << get<INDEX>(el) << ", " << get<TIME>(el)
+      << ", " << get<FINE>(el) << ")" << endl;
+  }
+}
+
 int job_cost(vector<tuple<int, int, int>> &tasks) {
   int cost = 0;
   int delay = 0;
@@ -72,9 +59,11 @@ int job_cost(vector<tuple<int, int, int>> &tasks) {
   return cost;
 }
 
-int min_job_cost(vector<tuple<int, int, int>> &tasks) {
-  sort(tasks.begin(), tasks.end(), compare);
+bool index_compare(tuple<int, int ,int> &a, tuple<int, int ,int> &b) {
+  return get<INDEX>(a) < get<INDEX>(b);
+}
 
+int min_job_cost(vector<tuple<int, int, int>> &tasks) {
   int min_cost = job_cost(tasks);
   for (int i = 0; i < tgamma(tasks.size() + 1); i++) {
     int cost = job_cost(tasks);
@@ -82,7 +71,7 @@ int min_job_cost(vector<tuple<int, int, int>> &tasks) {
       min_cost = cost;
       print_job_order(tasks);
     }
-    next_permutation(tasks.begin(), tasks.end(), compare);
+    next_permutation(tasks.begin(), tasks.end(), index_compare);
   }
 
   return min_cost;
@@ -117,10 +106,11 @@ int main() {
     int best_min = min_job_cost(tasks);
     cout << "Min cost: " << best_min << endl;
 
-    job_order(tasks);
+    stable_sort(tasks.begin(), tasks.end(), job_compare);
 
     cout << "Found cost: " << job_cost(tasks) << endl;
 
+    print_job_tuple(tasks);
     print_job_order(tasks);
   }
 }
