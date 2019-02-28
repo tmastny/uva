@@ -16,17 +16,7 @@
 using namespace std;
 
 bool job_compare(const tuple<int, int ,int> &a, const tuple<int, int ,int> &b) {
-  //return get<TIME>(a) * get<FINE>(b) < get<TIME>(b) * get<FINE>(a);
-
-
-  int lhs = get<TIME>(a) - get<FINE>(a);
-  int rhs = (get<TIME>(b) - get<FINE>(b));
-
-  if (lhs != rhs) {
-    return lhs < rhs;
-  }
-
-  return lhs * get<FINE>(a) > rhs * get<FINE>(b);
+  return get<TIME>(a) * get<FINE>(b) < get<TIME>(b) * get<FINE>(a);
 }
 
 int task_time(vector<tuple<int, int, int>> &tasks) {
@@ -110,16 +100,20 @@ int main() {
 
       tasks.push_back(make_tuple(j + 1, time, fine));
     }
-    cout << endl;
-    cout << "Task: " << i << " " << tasks_number << endl;
+    //cout << endl;
+    //cout << "Task: " << i << " " << tasks_number << endl;
 
-    int best_min = min_job_cost(tasks, true);
-    cout << "Min cost: " << best_min << endl;
+    //int best_min = min_job_cost(tasks, false);
+    //cout << "Min cost: " << best_min << endl;
 
     stable_sort(tasks.begin(), tasks.end(), job_compare);
-    cout << "Found cost: " << job_cost(tasks) << endl;
+    //cout << "Found cost: " << job_cost(tasks) << endl;
 
-    print_job_tuple(tasks);
+    //print_job_tuple(tasks);
     print_job_order(tasks);
+
+    if (i < cases - 1) {
+      cout << endl;
+    }
   }
 }
