@@ -15,10 +15,18 @@
 
 using namespace std;
 
-bool job_compare(tuple<int, int ,int> &a, tuple<int, int ,int> &b) {
-  return (
-    (get<TIME>(a) - get<FINE>(a)) < (get<TIME>(b) - get<FINE>(b))
-  );
+bool job_compare(const tuple<int, int ,int> &a, const tuple<int, int ,int> &b) {
+  //return get<TIME>(a) * get<FINE>(b) < get<TIME>(b) * get<FINE>(a);
+
+
+  int lhs = get<TIME>(a) - get<FINE>(a);
+  int rhs = (get<TIME>(b) - get<FINE>(b));
+
+  if (lhs != rhs) {
+    return lhs < rhs;
+  }
+
+  return lhs * get<FINE>(a) > rhs * get<FINE>(b);
 }
 
 int task_time(vector<tuple<int, int, int>> &tasks) {
@@ -63,13 +71,15 @@ bool index_compare(tuple<int, int ,int> &a, tuple<int, int ,int> &b) {
   return get<INDEX>(a) < get<INDEX>(b);
 }
 
-int min_job_cost(vector<tuple<int, int, int>> &tasks) {
+int min_job_cost(vector<tuple<int, int, int>> &tasks, bool print = true) {
   int min_cost = job_cost(tasks);
   for (int i = 0; i < tgamma(tasks.size() + 1); i++) {
     int cost = job_cost(tasks);
     if (cost < min_cost) {
       min_cost = cost;
-      print_job_order(tasks);
+      if (print) {
+        print_job_order(tasks);
+      }
     }
     next_permutation(tasks.begin(), tasks.end(), index_compare);
   }
@@ -103,11 +113,10 @@ int main() {
     cout << endl;
     cout << "Task: " << i << " " << tasks_number << endl;
 
-    int best_min = min_job_cost(tasks);
+    int best_min = min_job_cost(tasks, true);
     cout << "Min cost: " << best_min << endl;
 
     stable_sort(tasks.begin(), tasks.end(), job_compare);
-
     cout << "Found cost: " << job_cost(tasks) << endl;
 
     print_job_tuple(tasks);
